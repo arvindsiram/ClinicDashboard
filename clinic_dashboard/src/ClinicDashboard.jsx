@@ -7,8 +7,8 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY; 
 
 // Replace with your actual N8N Webhook URLs
-const N8N_CANCEL_WEBHOOK = 'https://your-n8n-instance.com/webhook/cancel';
-const N8N_DONE_WEBHOOK = 'https://your-n8n-instance.com/webhook/done';
+const N8N_CANCEL_WEBHOOK = import.meta.env.N8N_CANCEL_WEBHOOK;
+const N8N_DONE_WEBHOOK = import.meta.env.N8N_DONE_WEBHOOK;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
