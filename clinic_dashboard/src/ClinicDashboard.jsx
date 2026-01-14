@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { CheckCircle, XCircle, Clock, Phone, Activity, AlertCircle } from 'lucide-react';
-
+import ./dashboard.css'
 // --- CONFIGURATION ---
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL; 
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY; 
