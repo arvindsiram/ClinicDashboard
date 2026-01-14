@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import { CheckCircle, XCircle, Clock, Phone, Activity, AlertCircle } from 'lucide-react';
 
 // --- CONFIGURATION ---
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
+const SUPABASE_URL = import.meta.env.YOUR_SUPABASE_URL; 
+const SUPABASE_KEY = import.meta.env.YOUR_SUPABASE_ANON_KEY; 
 
 // Replace with your actual N8N Webhook URLs
 const N8N_CANCEL_WEBHOOK = 'https://your-n8n-instance.com/webhook/cancel';
