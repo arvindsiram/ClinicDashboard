@@ -1,46 +1,14 @@
-/* Custom properties for consistency */
-:root {
-  --indigo-50: #eef2ff;
-  --indigo-100: #e0e7ff;
-  --indigo-600: #4f46e5;
-  --indigo-700: #4338ca;
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-800: #1e293b;
-  --slate-900: #0f172a;
-  --red-50: #fef2f2;
-  --red-100: #fee2e2;
-  --red-600: #dc2626;
-  --orange-50: #fff7ed;
-  --orange-100: #ffedd5;
-  --orange-800: #9a3412;
+/* Custom Transitions & Hover Effects */
+.transition-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.transition-hover:hover {
+  transform: translateY(-2px);
+  border-color: #e2e8f0; /* slate-200 */
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Base styles */
-.min-h-screen {
-  min-height: 100vh;
-  transition: background-color 0.3s ease;
-}
-
-/* Sidebar Scrollbar */
+/* Custom Scrollbar for the Date Sidebar */
 .overflow-y-auto::-webkit-scrollbar {
   width: 6px;
 }
@@ -50,52 +18,46 @@
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: var(--slate-200);
-  border-radius: 10px;
+  background-color: #cbd5e1; /* slate-300 */
+  border-radius: 20px;
 }
 
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: var(--slate-400);
+.overflow-y-auto:hover::-webkit-scrollbar-thumb {
+  background-color: #94a3b8; /* slate-400 */
 }
 
-/* Card Hover Effects */
-.transition-hover {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Smooth active state for buttons */
+button:active {
+  transform: scale(0.98);
 }
 
-.hover\:shadow-md:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
+/* Glassmorphism subtle effect for the sidebar selected date */
+.bg-indigo-600 {
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
 }
 
-/* Action Button Feedback */
-.active\:scale-95:active {
-  transform: scale(0.95);
-}
-
-/* Grouped Appointments Container */
-.md\:col-span-3 > div {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* Symptoms Box Contrast */
+/* Ensure symptoms box doesn't overflow on small screens */
 .bg-orange-50 {
-  border-left: 4px solid #f97316 !important; /* Visual indicator for medical urgency */
+  word-break: break-word;
 }
 
-/* Responsive Overrides */
-@media (max-width: 768px) {
-  .space-y-2 {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    padding-bottom: 1rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+/* Pulse animation for loading state */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 640px) {
+  .p-8 {
+    padding: 1.25rem;
   }
   
-  .space-y-2 button {
-    min-width: 140px;
-    margin-top: 0 !important;
+  .text-3xl {
+    font-size: 1.5rem;
   }
 }
