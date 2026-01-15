@@ -31,13 +31,29 @@ const ClinicDashboard = () => {
 
   const fetchAppointments = async () => {
     setLoading(true);
+    
+    // --- DATE RANGE CALCULATION ---
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Start of today
+    
+    const futureLimit = new Date();
+    futureLimit.setDate(now.getDate() + 20);
+    futureLimit.setHours(23, 59, 59, 999); // End of the 20th day
+    // ------------------------------
+
     const { data, error } = await supabase
       .from('appointments')
       .select('patient_name, email, phone_number, patient_symptoms, date, status, start_time')
       .eq('status', 'Scheduled');
 
     if (!error) {
-      const sorted = (data || []).sort((a, b) => parseDate(a.date) - parseDate(b.date));
+      // Filter for appointments that fall within the next 20 days
+      const filtered = (data || []).filter(appt => {
+        const apptDate = parseDate(appt.date);
+        return apptDate >= now && apptDate <= futureLimit;
+      });
+
+      const sorted = filtered.sort((a, b) => parseDate(a.date) - parseDate(b.date));
       setAppointments(sorted);
       if (sorted.length > 0 && !selectedDate) setSelectedDate(sorted[0].date);
     }
@@ -97,7 +113,7 @@ const ClinicDashboard = () => {
             <CheckCircle size={32} />
           </div>
           <h3>All caught up!</h3>
-          <p>No appointments currently scheduled.</p>
+          <p>No appointments currently scheduled for the next 20 days.</p>
         </div>
       ) : (
         <div className="dashboard-grid">
@@ -110,8 +126,8 @@ const ClinicDashboard = () => {
                 className={`date-btn ${selectedDate === date ? 'active' : ''}`}
               >
                 <div className="date-btn-content">
-                   <span className="date-label">{date}</span>
-                   <span className="count-badge">{grouped[date].length}</span>
+                    <span className="date-label">{date}</span>
+                    <span className="count-badge">{grouped[date].length}</span>
                 </div>
               </button>
             ))}
