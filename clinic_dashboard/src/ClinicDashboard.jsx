@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { CheckCircle, Activity, Phone, Clock, Mail } from 'lucide-react';
+import { CheckCircle, Activity, Phone, Clock, Mail, FileText, Eye } from 'lucide-react'; // Added icons
 import './dashboard.css';
 
-// Initialization logic remains same...
+// Initialization logic
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -32,22 +32,20 @@ const ClinicDashboard = () => {
   const fetchAppointments = async () => {
     setLoading(true);
     
-    // --- DATE RANGE CALCULATION ---
     const now = new Date();
-    now.setHours(0, 0, 0, 0); // Start of today
+    now.setHours(0, 0, 0, 0);
     
     const futureLimit = new Date();
     futureLimit.setDate(now.getDate() + 20);
-    futureLimit.setHours(23, 59, 59, 999); // End of the 20th day
-    // ------------------------------
+    futureLimit.setHours(23, 59, 59, 999);
 
     const { data, error } = await supabase
       .from('appointments')
-      .select('patient_name, email, phone_number, patient_symptoms, date, status, start_time')
+      // MODIFIED: Added report_url to the select statement
+      .select('patient_name, email, phone_number, patient_symptoms, report_url, date, status, start_time')
       .eq('status', 'Scheduled');
 
     if (!error) {
-      // Filter for appointments that fall within the next 20 days
       const filtered = (data || []).filter(appt => {
         const apptDate = parseDate(appt.date);
         return apptDate >= now && apptDate <= futureLimit;
@@ -109,15 +107,12 @@ const ClinicDashboard = () => {
         <div className="loading-state">Loading schedule...</div>
       ) : appointments.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon-wrapper">
-            <CheckCircle size={32} />
-          </div>
+          <div className="empty-icon-wrapper"><CheckCircle size={32} /></div>
           <h3>All caught up!</h3>
           <p>No appointments currently scheduled for the next 20 days.</p>
         </div>
       ) : (
         <div className="dashboard-grid">
-          {/* Sidebar */}
           <div className="sidebar">
             {Object.keys(grouped).map(date => (
               <button 
@@ -133,7 +128,6 @@ const ClinicDashboard = () => {
             ))}
           </div>
 
-          {/* Main Content */}
           <div className="main-content">
             <h2>Appointments for {selectedDate}</h2>
             {grouped[selectedDate]?.map((appt, i) => (
@@ -148,6 +142,24 @@ const ClinicDashboard = () => {
                     <p className="symptoms-label">Symptoms</p>
                     <p className="symptoms-text">{appt.patient_symptoms}</p>
                   </div>
+
+                  {/* ADDED: PDF Report Preview Section */}
+                  {appt.report_url && appt.report_url.startsWith('data:application/pdf;base64,') ? (
+                    <div className="report-preview-container">
+                      <p className="report-label"><FileText size={14} /> Medical Report Preview</p>
+                      <iframe
+                        src={appt.report_url}
+                        title={`Report for ${appt.patient_name}`}
+                        className="report-iframe"
+                        width="100%"
+                        height="300px"
+                      ></iframe>
+                    </div>
+                  ) : (
+                    <div className="no-report-box">
+                      <p className="no-report-text">No medical report attached.</p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="appointment-actions">
@@ -155,18 +167,8 @@ const ClinicDashboard = () => {
                     <Clock size={18} /> {appt.start_time}
                   </div>
                   <div className="btn-group">
-                    <button 
-                      onClick={() => handleAction(appt, 'Cancelled')} 
-                      className="btn btn-cancel"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleAction(appt, 'Completed')} 
-                      className="btn btn-done"
-                    >
-                      Done
-                    </button>
+                    <button onClick={() => handleAction(appt, 'Cancelled')} className="btn btn-cancel">Cancel</button>
+                    <button onClick={() => handleAction(appt, 'Completed')} className="btn btn-done">Done</button>
                   </div>
                 </div>
               </div>
